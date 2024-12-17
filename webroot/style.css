@@ -1,0 +1,59 @@
+
+.blank-cell {
+  background-color: #d1d5db;
+}
+
+.blank-cell:hover {
+  background-color: #9ca3af;
+}
+
+.two-pointer-cell {
+  background-color: #86efac;
+}
+
+.two-pointer-cell:hover {
+  background-color: #4ade80;
+}
+
+.five-pointer-cell {
+  background-color: #7dd3fc;
+}
+
+.five-pointer-cell:hover {
+  background-color: #38bdf8;
+}
+
+.ten-pointer-cell {
+  background-color: #fcd34d;
+
+}
+
+.ten-pointer-cell:hover {
+  background-color: #fbbf24;
+}
+
+.minimize {
+  animation: minimize 0.3s ease-in-out;
+}
+.blocked-border {
+  border: 5px solid #ff000075;
+}
+
+#results {
+  position: absolute;
+  font-size: 3.5em;
+  font-weight: bolder;
+  font-family: "Hangyaboly";
+  color: #3a3939;
+}
+@keyframes minimize {
+  0% {
+    transform: scale(1);
+    opacity: 1;
+  }
+
+  100% {
+    transform: scale(0.5);
+    opacity: 0;
+  }
+}
