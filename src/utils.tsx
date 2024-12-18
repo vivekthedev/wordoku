@@ -67,3 +67,13 @@ export async function getLeaderboard(ctx: Devvit.Context): Promise<any> {
     100,
   ];
 }
+
+export const createComment = async (grid: string, ctx: Devvit.Context) => {
+  const postId = ctx.postId;
+  if (postId) {
+    await ctx.reddit.submitComment({
+      id: postId,
+      text: "```" + grid + "```",
+    });
+  }
+};

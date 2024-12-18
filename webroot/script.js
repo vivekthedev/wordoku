@@ -15995,6 +15995,36 @@ class Grid {
     this.gridElement.classList.add("invisible");
     this.submitButtonElement.classList.add("invisible");
     this.scoreElement.textContent = `You  Scored ${totalScore}`;
+    this.commentStr = this.getCommentStr();
+    setTimeout(() => {
+      window.parent.postMessage(
+        {
+          type: "commentStr",
+          data: { comment: this.commentStr },
+        },
+        "*"
+      );
+    }, 3000);
+  }
+
+  getCommentStr() {
+    let commentStr = "";
+    for (let i = 0; i < 5; i++) {
+      for (let j = 0; j < 5; j++) {
+        let cell = this.gridArray[i][j];
+        if (cell.classList.contains("two-pointer-cell")) {
+          commentStr += "🟦";
+        } else if (cell.classList.contains("five-pointer-cell")) {
+          commentStr += "🟩";
+        } else if (cell.classList.contains("ten-pointer-cell")) {
+          commentStr += "🟨";
+        } else {
+          commentStr += "⏹️";
+        }
+      }
+      commentStr += "\n";
+    }
+    return commentStr;
   }
 
   selectThreeElements() {

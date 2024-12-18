@@ -1,4 +1,5 @@
-import { Devvit, useState } from "@devvit/public-api";
+import { Devvit, useState, useForm } from "@devvit/public-api";
+import { createComment } from "./utils.js";
 
 Devvit.configure({
   redditAPI: true,
@@ -23,6 +24,26 @@ export const Play = (props: PlayProps): JSX.Element => {
       },
     });
   };
+  const customForm = useForm(
+    (data) => {
+      return {
+        fields: [
+          {
+            type: "string",
+            name: "comment",
+            label: "Comment",
+            required: true,
+            defaultValue: data.text,
+          },
+        ],
+      } as const;
+    },
+    (event) => {
+      console.log(event.comment);
+      createComment(event.comment, props.context);
+    }
+  );
+
   return (
     <vstack grow padding='small'>
       <vstack
@@ -43,6 +64,14 @@ export const Play = (props: PlayProps): JSX.Element => {
           <webview
             id='web-view'
             url='page.html'
+            onMessage={(message: any) => {
+              if (message) {
+                if (message.type === "commentStr") {
+                  const text = message.data.comment;
+                  props.context.ui.showForm(customForm, { text });
+                }
+              }
+            }}
             grow
             height={webviewVisible ? "100%" : "0%"}
           />
