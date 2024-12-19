@@ -1,5 +1,5 @@
 import { Devvit, useState, useForm } from "@devvit/public-api";
-import { createComment } from "./utils.js";
+import { createComment, uploadScore } from "./utils.js";
 
 Devvit.configure({
   redditAPI: true,
@@ -68,6 +68,8 @@ export const Play = (props: PlayProps): JSX.Element => {
               if (message) {
                 if (message.type === "commentStr") {
                   const text = message.data.comment;
+                  const score = message.data.total;
+                  uploadScore(score, props.context);
                   props.context.ui.showForm(customForm, { text });
                 }
               }

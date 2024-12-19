@@ -7,6 +7,12 @@ import { getLeaderboard } from "./utils.js";
 
 export function App(ctx: Devvit.Context): JSX.Element {
   const [page, setPage] = useState("menu");
+  const [rcData] = useState(async () => {
+    return await handlePostRandomData(ctx);
+  });
+  const [leaderboardData] = useState(async () => {
+    return await getLeaderboard(ctx);
+  });
   const Menu = (
     <vstack
       width='100%'
@@ -53,16 +59,7 @@ export function App(ctx: Devvit.Context): JSX.Element {
       </button>
     </vstack>
   );
-  const [rcData] = useState(async () => {
-    console.log("fetching data");
-    return await handlePostRandomData(ctx);
-  });
-  console.log(rcData);
-  const [leaderboardData] = useState(async () => {
-    return await getLeaderboard(ctx);
-  });
-  if (!ctx.postId) throw Error("no post ID");
-  if (!ctx.userId) throw Error("no user ID");
+
   const onClose = (): void => {
     setPage("menu");
   };

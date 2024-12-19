@@ -1,5 +1,4 @@
 import { Devvit } from "@devvit/public-api";
-import { Leaderboard } from "./Leaderboard.js";
 
 const selectThreeElements = () => {
   const selectedRows: number[] = [];
@@ -39,7 +38,6 @@ export async function handlePostRandomData(ctx: Devvit.Context): Promise<any> {
     rcData = await redis.hGetAll(postId);
     if (Object.keys(rcData).length === 0) {
       rcData = selectThreeElements();
-      console.log(rcData);
       await redis.hSet(postId, {
         rows: JSON.stringify(rcData.rows),
         cols: JSON.stringify(rcData.cols),
@@ -56,18 +54,39 @@ export async function handlePostRandomData(ctx: Devvit.Context): Promise<any> {
 export async function getLeaderboard(ctx: Devvit.Context): Promise<any> {
   const redis = ctx.redis;
   const postId = ctx.postId;
-  const curUser = await ctx.reddit.getCurrentUser();
+  const user = await ctx.reddit.getCurrentUser();
+  let username = "anon";
+  let userScore = null;
+  let scores: any = [];
+  if (user) {
+    username = user.username;
+  }
 
-  return [
-    [
-      { score: 100, member: "user1" },
-      { score: 90, member: "user2" },
-      { score: 80, member: "user3" },
-    ],
-    100,
-  ];
+  if (postId) {
+    userScore = await redis.zScore(`${postId}_leaderboard`, username);
+    scores = await redis.zRange(`${postId}_leaderboard`, 0, 2);
+  }
+  return [scores, userScore];
 }
-
+export const uploadScore = async (score: number, ctx: Devvit.Context) => {
+  const redis = ctx.redis;
+  const user = await ctx.reddit.getCurrentUser();
+  let username = "anon";
+  if (user) {
+    username = user.username;
+  }
+  const postId = ctx.postId;
+  if (postId) {
+    let userScore = await redis.zScore(`${postId}_leaderboard`, username);
+    userScore = userScore ? userScore : 0;
+    if (userScore < score) {
+      await redis.zAdd(`${postId}_leaderboard`, {
+        member: username,
+        score: score,
+      });
+    }
+  }
+};
 export const createComment = async (grid: string, ctx: Devvit.Context) => {
   const postId = ctx.postId;
   if (postId) {

@@ -16000,7 +16000,7 @@ class Grid {
       window.parent.postMessage(
         {
           type: "commentStr",
-          data: { comment: this.commentStr },
+          data: { comment: this.commentStr, total: totalScore },
         },
         "*"
       );
